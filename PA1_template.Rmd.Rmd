@@ -1,0 +1,84 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+#Packages
+```{r setup, include=FALSE}
+library(haven)
+library(foreign)
+library(rio)
+library(survey)
+library(nnet)
+library(ggplot2)
+library(describer)
+library(tidyverse)
+library(psych)
+library(MASS)
+library(Hmisc)
+library(reshape2)
+library(margins)
+library(stargazer)
+library(mediation)
+library(summarytools)
+library(sjPlot)
+library(dplyr)
+```
+
+#Commit containing full submission
+## Code for reading in the dataset and/or processing the data
+```{r, echo=TRUE}
+setwd("\\Users\\ferre\\Desktop")
+data <- read.csv("activity.csv")
+data
+```
+
+## Histogram of the total number of steps taken each day
+```{r}
+hist1 <- data %>%
+  group_by(date) %>% 
+  summarise(steps=sum(steps))
+hist1
+histogram(hist1$steps)
+```
+
+## Mean and median number of steps taken each day
+```{r}
+hist2 <- data %>%
+  group_by(date) %>% 
+  summarise(mean = mean(steps), median=median(steps), steps=sum(steps))
+hist2
+```
+
+## Time series plot of the average number of steps taken
+```{r}
+ggplot(hist2, aes(x=date, y=(steps), group = 1, na.rm = TRUE)) +
+  geom_point() +
+  geom_line() +
+  xlab("Dates") +
+  theme(axis.text.x=element_text(angle=60, hjust=1))
+
+```
+
+## The 5-minute interval that, on average, contains the maximum number of steps
+```{r}
+agginterval <- aggregate(data$steps ~ data$interval, FUN=sum)
+filter(agginterval, agginterval$`data$steps`== max(agginterval$`data$steps`))
+```
+
+## Code to describe and show a strategy for imputing missing data
+```{r}
+table(is.na(data$steps))
+```
+
+## Histogram of the total number of steps taken each day after missing values are imputed
+```{r}
+histogram(data$steps)
+```
+
+## Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+```{r}
+#I don't have an ideia how to do it.
+```
+
